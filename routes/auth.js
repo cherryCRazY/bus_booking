@@ -9,7 +9,6 @@ router.get(
     })
 );
 router.get("/callback", passport.authenticate("google"), (req, res) => {
-    console.log(req.user);
     res.redirect("/api/current_user");
 });
 
