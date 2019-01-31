@@ -20,7 +20,7 @@ const busRouteSchema = new mongoose.Schema({
     }
 });
 
-const BusRoute = mongoose.model("BusRoute".busRouteSchema);
+const BusRoute = mongoose.model("BusRoute", busRouteSchema);
 
 function validateBusRoute(busRoute) {
     const schema = {
