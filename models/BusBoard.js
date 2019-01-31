@@ -8,7 +8,6 @@ const busBoardSchema = new mongoose.Schema({
         type: [seatShema],
         required: true
     },
-    name: { type: String, required: true },
     transport: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "BusBoard",
@@ -21,7 +20,6 @@ const BusBoard = mongoose.model("BusBoard", busBoardSchema);
 const validateBus = bus => {
     const schema = {
         places: Joi.array().items(validateSeat),
-        name: Joi.string().required(),
         transport: Joi.ObjectId().required()
     };
 
