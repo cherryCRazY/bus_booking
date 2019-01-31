@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { seatShema, validateSeat } from "./Seat";
-import { validateBusTransport } from "./BusTransport";
 import Joi from "joi";
 
 const busBoardSchema = new mongoose.Schema({
@@ -10,7 +9,7 @@ const busBoardSchema = new mongoose.Schema({
     },
     transport: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "BusBoard",
+        ref: "BusTransport",
         required: true
     }
 });
@@ -27,4 +26,5 @@ const validateBus = bus => {
 };
 
 module.exports.BusBoard = BusBoard;
-module.exports.validateBus = validateBus;
+module.exports.busBoardSchema = busBoardSchema;
+module.exports.validateBusBoard = validateBus;
