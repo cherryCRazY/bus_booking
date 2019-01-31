@@ -44,7 +44,9 @@ function validateUser(user) {
         phoneNumber: Joi.string()
             .min(10)
             .max(10)
-            .required()
+            .required(),
+        isAdmin: Joi.boolean(),
+        id: Joi.string()
     };
 
     return Joi.validate(user, shema);
