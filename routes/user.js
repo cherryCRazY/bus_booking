@@ -14,7 +14,6 @@ router.post(
     isAdmin,
     async (req, res) => {
         try {
-        
             const { error } = validateUser(req.body);
             if (error) return res.status(400).send(error.details[0].message);
 
@@ -26,11 +25,6 @@ router.post(
                 { new: true }
             );
             await user.save();
-
-            if (!user)
-                return res
-                    .status(404)
-                    .send("The customer with the given ID was not found.");
 
             res.send(user);
         } catch (error) {

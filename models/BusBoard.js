@@ -1,30 +1,32 @@
-import mongoose, { SchemaType } from "mongoose";
+import mongoose from "mongoose";
 import { seatShema, validateSeat } from "./Seat";
+import { validateBusTransport } from "./BusTransport";
 import Joi from "joi";
 
-const busSchema = new mongoose.Schema({
+const busBoardSchema = new mongoose.Schema({
     places: {
         type: [seatShema],
         required: true
     },
     name: { type: String, required: true },
-    stateCarNumber: {
-        type: String,
+    transport: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "BusBoard",
         required: true
     }
 });
 
-const Bus = mongoose.model("Bus", busSchema);
+const BusBoard = mongoose.model("BusBoard", busBoardSchema);
 
 const validateBus = bus => {
     const schema = {
         places: Joi.array().items(validateSeat),
         name: Joi.string().required(),
-        stateCarNumber: Joi.string().required()
+        transport: Joi.ObjectId().required()
     };
 
     return Joi.validate(bus, schema);
 };
 
-module.exports.Bus = Bus;
+module.exports.BusBoard = BusBoard;
 module.exports.validateBus = validateBus;

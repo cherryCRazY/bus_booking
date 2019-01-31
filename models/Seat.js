@@ -21,6 +21,7 @@ const Seat = mongoose.model("Seat", seatShema);
 const validateSeat = seat => {
     const schema = {
         price: Joi.number().required(),
+        seatTaken: Joi.boolean(),
         numberOfSeat: Joi.number().required()
     };
     return Joi.validate(seat, schema);

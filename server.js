@@ -15,6 +15,7 @@ mongoose
     .catch(() => console.error("Ooops"));
 
 app.use(express.json());
+require("./startup/validate")();
 app.use(
     cookieSession({
         maxAge: 30 * 24 * 60 * 60 * 1000,
