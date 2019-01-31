@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { SchemaType } from "mongoose";
 import Joi from "joi";
 
 const busRouteSchema = new mongoose.Schema({
@@ -13,6 +13,10 @@ const busRouteSchema = new mongoose.Schema({
     data: {
         type: Date,
         required: true
+    },
+    bus: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Bus"
     }
 });
 
