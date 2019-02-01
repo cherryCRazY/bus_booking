@@ -1,14 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const { BusRoute, validateBusRoute } = require("../models/BusPath");
-const { BusTransport } = require("../models/BusTransport");
+const { BusRoute, validateBusRoute } = require("../models/BusRoute");
+const {
+    BusTransport,
+    validateBusTransport
+} = require("../models/BusTransport");
 const { BusBoard } = require("../models/BusBoard");
 const { Seat } = require("../models/Seat");
 const requireLogin = require("../middleware/requireLogin");
 const isAdmin = require("../middleware/isAdmin");
 
 router.post(
-    "/api/bus_route",
+    "/bus_route",
     /*requireLogin,isAdmin, */ async (req, res) => {
         try {
             const { error } = validateBusRoute(req.body);
@@ -25,10 +28,10 @@ router.post(
 
             const places = [];
 
-            for (let i = 1; i < findedBus.countSeats; i++) {
+            for (let i = 1; i <= findedBus.countSeats; i++) {
                 places.push(
                     new Seat({
-                        price: price * Math.floor(Math.random() * 1.5),
+                        price,
                         numberOfSeat: i
                     })
                 );
@@ -37,15 +40,21 @@ router.post(
                 places,
                 transport: bus.id
             });
+            await busBoard.save();
+            console.log(busBoard);
 
             const busRoute = new BusRoute({
                 toCity,
                 fromCity,
                 data,
+                price,
                 bus: {
-                    ...busBoard
+                    _id: busBoard.id
                 }
             });
+            console.log("busRoute");
+            console.log(busRoute);
+
             await busRoute.save();
 
             res.send(busRoute);
@@ -55,6 +64,26 @@ router.post(
     }
 );
 
-router.post("/api/bus", /*requireLogin,isAdmin, */ async (req, res) => {});
+router.post(
+    "/bus",
+    /*requireLogin,isAdmin, */ async (req, res) => {
+        try {
+            const { error } = validateBusTransport(req.body);
+            if (error) return res.status(400).send(error.details[0].message);
+
+            const { countSeats, name, stateCarNumber } = req.body;
+            const newBus = new BusTransport({
+                countSeats,
+                name,
+                stateCarNumber
+            });
+            await newBus.save();
+
+            res.send(newBus);
+        } catch (error) {
+            res.status(400).send(error);
+        }
+    }
+);
 
 module.exports = router;

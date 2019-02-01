@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import { seatShema, validateSeat } from "./Seat";
-import Joi from "joi";
+const { seatShema, validateSeat } = require("./Seat");
+const mongoose = require("mongoose");
+const Joi = require("joi");
 
 const busBoardSchema = new mongoose.Schema({
     places: {

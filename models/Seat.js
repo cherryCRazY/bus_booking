@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import Joi from "joi";
+const mongoose = require("mongoose");
+const Joi = require("joi");
 
 const seatShema = new mongoose.Schema({
     price: {
