@@ -46,7 +46,7 @@ function validateUser(user) {
             .max(10)
             .required(),
         isAdmin: Joi.boolean(),
-        id: Joi.string()
+        _id: Joi.objectId()
     };
 
     return Joi.validate(user, shema);

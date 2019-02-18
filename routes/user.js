@@ -1,55 +1,62 @@
+// API
 const express = require("express");
 const router = express.Router();
-const { User, validateUser } = require("../models/user");
-const requireLogin = require("../middleware/requireLogin");
+
+// Middlewares
 const isAdmin = require("../middleware/isAdmin");
-const { BusRoute, simpleValidateBusRoute } = require("../models/BusRoute");
+const requireLogin = require("../middleware/requireLogin");
+
+// Db models
+const { User, validateUser } = require("../models/user");
+const { simpleValidateBusRoute } = require("../models/BusRoute");
+const { validateSeat } = require("../models/Seat");
+
+//Services
+const busService = require("../services/bus");
 
 router.get("/current_user", (req, res) => {
     res.send(req.user);
 });
 
-router.post("/bus_route", async (req, res) => {
-    try {
-        const { error } = simpleValidateBusRoute(req.body);
-        if (error) return res.status(400).send(error.details[0].message);
+router.post(
+    "/user_tickets",
+    /**requireLogin, */ async (req, res) => {
+        const { error } = req.body.tickets
+            .map(seat => validateSeat(seat))
+            .find(validSeat => (validateSeat(validSeat).error ? true : false));
 
-        const { fromCity, toCity, data } = req.body;
+        if (error)
+            return res.status(400).json({ error: error.details[0].message });
 
-        const startData = new Date(data);
-        let result = new Date(data);
-        const endData = new Date(result.setDate(result.getDate() + 1));
+        const result = await busService.bookingSeat(req);
 
-        const route = await BusRoute.find({
-            fromCity,
-            toCity,
-            data: { $gte: startData, $lt: endData }
-        });
-
-        res.send(route);
-    } catch (error) {
-        res.status(400).send(error);
+        res.send(result);
     }
+);
+
+router.post("/bus_route", async (req, res) => {
+    const { error } = simpleValidateBusRoute(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    const route = await busService.findRoute(req);
+
+    res.send(route);
 });
 
 router.post("/current_user/phone_number", requireLogin, async (req, res) => {
-    try {
-        const { error } = validateUser(req.body);
-        if (error) return res.status(400).send(error.details[0].message);
+    const { error } = validateUser(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-        const { id, phoneNumber } = req.body;
+    const { id, phoneNumber } = req.body;
 
-        const user = await User.findByIdAndUpdate(
-            id,
-            { phoneNumber: phoneNumber },
-            { new: true }
-        );
-        await user.save();
+    const user = await User.findByIdAndUpdate(
+        id,
+        { phoneNumber: phoneNumber },
+        { new: true }
+    );
+    await user.save();
 
-        res.send(user);
-    } catch (error) {
-        res.status(404).send(error.message);
-    }
+    res.send(user);
 });
 
 module.exports = router;

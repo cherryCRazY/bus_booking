@@ -4,8 +4,7 @@ const Joi = require("joi");
 
 const busBoardSchema = new mongoose.Schema({
     places: {
-        type: [seatShema],
-        required: true
+        type: [seatShema]
     },
     transport: {
         type: mongoose.Schema.Types.ObjectId,
@@ -13,6 +12,8 @@ const busBoardSchema = new mongoose.Schema({
         required: true
     }
 });
+
+busBoardSchema.index({ places: 1 }, { unique: true, sparse: true });
 
 const BusBoard = mongoose.model("BusBoard", busBoardSchema);
 

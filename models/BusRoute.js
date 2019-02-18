@@ -15,7 +15,11 @@ const busRouteSchema = new mongoose.Schema({
 
         required: true
     },
-    data: {
+    dateStart: {
+        type: Date,
+        required: true
+    },
+    dateFinish: {
         type: Date,
         required: true
     },
@@ -42,11 +46,13 @@ function validateBusRoute(busRoute) {
             .min(3)
             .max(50)
             .required(),
-        data: Joi.date().required(),
+        dateStart: Joi.date().required(),
+        dateFinish: Joi.date().required(),
         bus: Joi.object(),
         price: Joi.number()
             .min(0)
-            .required()
+            .required(),
+        _id: Joi.objectId()
     };
 
     return Joi.validate(busRoute, schema);
@@ -61,7 +67,7 @@ function simpleValidateBusRoute(busRoute) {
             .min(3)
             .max(50)
             .required(),
-        data: Joi.date().required()
+        dateStart: Joi.date().required()
     };
 
     return Joi.validate(busRoute, schema);

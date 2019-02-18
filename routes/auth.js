@@ -1,3 +1,4 @@
+// API
 const passport = require("passport");
 const express = require("express");
 const router = express.Router();
@@ -13,7 +14,7 @@ router.get("/logout", (req, res) => {
     res.redirect("/");
 });
 router.get("/callback", passport.authenticate("google"), (req, res) => {
-    res.redirect("/user");
+    res.redirect("/");
 });
 
 module.exports = router;
